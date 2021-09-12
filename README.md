@@ -10,64 +10,57 @@ The basic purpose of code refactoring is to make the code more efficient and mai
 
 In order to make the code more efficient, I switched the nesting order of the 'for' loops. I created 4 different arrays - tickers, tickerVolumes, tickerStartingPrices, and tickerEndingPrices. The tickers array was used to identify the ticker symbol of a stock. The rest of the arrays were matched with the tickers array using a variable called  tickerIndex. This variable allowed me to assign the tickerVolumes, tickerStartingPrices, and tickerEndingPrices to each ticker symbol before looping through the data set. This would complete the analysis much faster than using the nested 'for' loop as in the previous version of the code. 
 
-The refactored code looks something like this:
-
+The refactored code (extract) looks something like this:
+   
     '1a) Create a ticker Index
-    Dim tickerIndex As Integer
-    
     tickerIndex = 0
     
     '1b) Create three output arrays
     Dim tickerVolumes(12) As Long
-    Dim tickerStartingPrice(12) As Single
-    Dim tickerEndingPrice(12) As Single
-        
+    Dim tickerStartingPrices(12) As Single
+    Dim tickerEndingPrices(12) As Single
+    
     ''2a) Create a for loop to initialize the tickerVolumes to zero.
     For i = 0 To 11
-        tickerIndex = i
         tickerVolumes(i) = 0
+    Next i
     
     ''2b) Loop over all the rows in the spreadsheet.
-        For j = 2 To RowCount
     
+    For i = 2 To RowCount
+        
         '3a) Increase volume for current ticker
-            tickerVolumes(i) = tickerVolumes(i) + Cells(j, 8).Value
-                
+        tickerVolumes(tickerIndex) = tickerVolumes(tickerIndex) + Cells(i, 8).Value
+        
         '3b) Check if the current row is the first row with the selected tickerIndex.
-                If Cells(j - 1, 1).Value <> tickers(i) And Cells(j, 1).Value = tickers(i) Then
-                    tickerStartingPrice(i) = Cells(j, 6).Value
-                End If
-
-        '3c) check if the current row is the last row with the selected ticker
-        
-                If Cells(j + 1, 1).Value <> tickers(i) And Cells(j, 1).Value = tickers(i) Then
-                    tickerEndingPrice(i) = Cells(j, 6).Value
-                End If
-      
-
-        '3d) Increase the tickerIndex.
-                If Cells(j + 1, 1).Value <> Cells(j, 1).Value Then
-                    i = i + 1
-                End If
-        
-        'loop to next row
-        Next j
-        
-    'loop to next ticker
     
+        If Cells(i - 1, 1).Value <> tickers(tickerIndex) Then
+            tickerStartingPrices(tickerIndex) = Cells(i, 6).Value
+        'End If
+        End If
+        
+        '3c) check if the current row is the last row with the selected ticker
+        'If the next rows ticker doesnt match, increase the tickerIndex.
+        
+        If Cells(i + 1, 1).Value <> tickers(tickerIndex) Then
+            tickerEndingPrices(tickerIndex) = Cells(i, 6).Value
+        
+            '3d Increase the tickerIndex.
+            tickerIndex = tickerIndex + 1
+        
+        End If
+        
     Next i
     
     '4) Loop through your arrays to output the Ticker, Total Daily Volume, and Return.
     
     For i = 0 To 11
-    
         Worksheets("All Stocks Analysis").Activate
-        Cells(4 + i, 1).Value = tickers(i)
-        Cells(4 + i, 2).Value = tickerVolumes(i)
-        Cells(4 + i, 3).Value = tickerEndingPrice(i) / tickerStartingPrice(i) - 1
-        
+        Cells(i + 4, 1).Value = tickers(i)
+        Cells(i + 4, 2).Value = tickerVolumes(i)
+        Cells(i + 4, 3).Value = tickerEndingPrices(i) / tickerStartingPrices(i) - 1
     Next i
- 
+    
 ## Results
 
 ### Run-time ###
@@ -84,7 +77,7 @@ Once the code was refactored, run times were as follows:
 
 ![image](https://github.com/amberwnaushahi/stock-analysis/blob/main/Resources/VBA_Challenge_2018.png)
 
-**Based on the run-times, the refactored code runs a little less than 0.5 seconds faster than the original code making it more efficient.**
+**Based on the run-times, the refactored code runs over 0.5 seconds faster than the original code making it more efficient.**
 
 ### Stock Performance - 2017 and 2018
 
@@ -114,4 +107,4 @@ Some of the cons of refactoring include:
 
 In our case, refactoring the original VBA script resulted in a more efficient program that resulted in faster run times. However, the time-saving was minimal compared to the time it took to actually refactor. This exercise would be very useful when data sets are very large and executed multiple times.
 
-The code flow was more logical after refactoring. It can incoporate additional data as and when it is added, for example subsequent years' performance. 
+The code flow was more logical after refactoring. It can incorporate additional data as and when it is added, for example subsequent years' performance. 
