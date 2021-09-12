@@ -8,7 +8,7 @@ The basic purpose of code refactoring is to make the code more efficient and mai
 
 ## Refactoring ##
 
-In order to make the code more efficient, I switched the nesting order of the 'for' loops. I created 4 different arrays - tickers, tickerVolumes, tickerStartingPrices, and tickerEndingPrices. The tickers array was used to identify the ticker symbol of a stock. The rest of the arrays were matched with the tickers array using a variable called  tickerIndex. This variable allowed me to assign the tickerVolumes, tickerStartingPrices, and tickerEndingPrices to each ticker symbol before looping through the data set. This would complete the analysis much faster than using the nested 'for' loop as in the previous version of the code. 
+In order to make the code more efficient, I created 4 different arrays - tickers, tickerVolumes, tickerStartingPrices, and tickerEndingPrices. The tickers array was used to identify the ticker symbol of a stock. The rest of the arrays were matched with the tickers array using a variable called  tickerIndex. This variable allowed me to assign the tickerVolumes, tickerStartingPrices, and tickerEndingPrices to each ticker symbol before looping through the data set. This would complete the analysis much faster than using the nested 'for' loop as in the previous version of the code. 
 
 The refactored code (extract) looks something like this:
    
